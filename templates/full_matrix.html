@@ -1,0 +1,16 @@
+<table>
+	<tr>
+		<th></th>
+		{% for course in courses %}
+			<th>{{course.code}}</th>
+		{% endfor %}
+	</tr>
+	{% for row in matrix %}
+	<tr>
+		<th>{{students[loop.index0].name}}</th>
+		{% for elem in row %}
+			<td>{{elem}}</td>
+		{% endfor %}
+	</tr>
+	{% endfor %}
+</table>

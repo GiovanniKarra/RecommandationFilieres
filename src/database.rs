@@ -7,24 +7,24 @@ use libmatcompl::FMatrix;
 
 
 #[derive(Debug)]
-struct Student {
-	id: i64,
-	name: String
+pub struct Student {
+	pub id: i64,
+	pub name: String
 }
 
 #[derive(Debug)]
-struct Course {
-	id: i64,
-	code: String,
-	name: String
+pub struct Course {
+	pub id: i64,
+	pub code: String,
+	pub name: String
 }
 
 #[derive(Debug)]
 pub struct Rating {
-	id: i64,
-	student: i64,
-	course: i64,
-	rating: i64
+	pub id: i64,
+	pub student: i64,
+	pub course: i64,
+	pub rating: i64
 }
 
 pub async fn reset_db(path: PathBuf, schema: String) -> Result<SqlitePool, String> {
@@ -76,7 +76,7 @@ pub async fn add_student(name: String, pool: &SqlitePool) -> Result<(), String> 
 }
 
 
-pub async fn add_course(name: String, code: String, pool: &SqlitePool) -> Result<(), String> {
+pub async fn add_course(code: String, name: String, pool: &SqlitePool) -> Result<(), String> {
 	let course = sqlx::query_as!(
 		Course,
 		"
@@ -200,4 +200,32 @@ pub async fn get_course_count(pool: &SqlitePool) -> Result<usize, String> {
 	.await
 	.map_err(|e| e.to_string())
 	.map(|res| res as usize)
+}
+
+
+pub async fn get_students(pool: &SqlitePool) -> Result<Vec<Student>, String> {
+	sqlx::query_as!(
+		Student,
+		"
+		SELECT id, name
+		FROM students;
+		"
+	)
+	.fetch_all(pool)
+	.await
+	.map_err(|e| e.to_string())
+}
+
+
+pub async fn get_courses(pool: &SqlitePool) -> Result<Vec<Course>, String> {
+	sqlx::query_as!(
+		Course,
+		"
+		SELECT id, code, name
+		FROM courses;
+		"
+	)
+	.fetch_all(pool)
+	.await
+	.map_err(|e| e.to_string())
 }
