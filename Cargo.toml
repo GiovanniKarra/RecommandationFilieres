@@ -8,3 +8,4 @@ rocket = { version = "0.5.1" }
 askama = { version = "0.12.1", features = ["with-rocket"] }
 sqlx = { version = "0.8.1", features = ["sqlite", "macros", "runtime-async-std"] }
 libmatcompl = { path = "../libmatcompl" }
+dotenvy = "0.15.7"

@@ -1224,6 +1224,7 @@ name = "matrix-completion-app"
 version = "0.1.0"
 dependencies = [
  "askama",
+ "dotenvy",
  "libmatcompl",
  "rocket",
  "sqlx",
