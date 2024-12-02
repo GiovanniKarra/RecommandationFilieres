@@ -10,3 +10,9 @@ pub struct RatingsMatrix {
 	pub students: Vec<Student>,
 	pub matrix: Vec<Vec<f32>>
 }
+
+#[derive(Template)]
+#[template(path = "courses_list.html")]
+pub struct CoursesList {
+	pub courses: Vec<Course>
+}

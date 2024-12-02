@@ -1,7 +1,36 @@
 <html>
-	<h1>Hello sir</h1>
-	<script src="assets/js/htmx.min.js" defer></script>
-	<div class="matrix" hx-get="/admin/matrix" hx-swap="innerHTML" hx-trigger="load">
 
-	</div>
+	<body>
+		<h1>Hello sir</h1>
+		<script src="assets/js/htmx.min.js" defer></script>
+		<div id="matrix-view">
+			<div id="matrix">
+		
+			</div>
+			<button
+				hx-get="/admin/matrix"
+				hx-target="#matrix"
+				hx-trigger="click"
+				hx-swap="innerHTML">
+				Générer matrice
+			</button>
+		</div>
+	
+		<div id="courses-view">
+			<form hx-post="/admin/new-course" id="new-course-form" hx-swap="none">
+				<label for="code">Code du cours</label>
+				<label for="name">Nom du cours</label>
+				<br>
+				<input type="text" name="code" placeholder="LINMA1510">
+				<input type="text" name="name" placeholder="T_T">
+				<input type="submit" value="Ajouter">
+			</form>
+			<div id="courses"
+				hx-get="/admin/courses"
+				hx-trigger="load,submit from:#new-course-form"
+				hx-swap="innerHTML">
+
+			</div>
+		</div>
+	</body>
 </html>
