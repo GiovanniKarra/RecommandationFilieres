@@ -1,7 +1,50 @@
 <html>
 	<head>
 		<title>Suggestion de filières | Formulaire</title>
+		<style src="assets/css/style.css"></style>
+		<script src="assets/js/htmx.min.js" defer></script>
 	</head>
 	<body>
+		<h1>FORM</h1>
+		<form hx-get="/form" hx-swap="outerHTML">
+			<table>
+				<tr>
+					<th>
+						<label for="name">Votre nom</label>
+					</th>
+					<th>
+						<label for="type1">Filière 1</label>
+					</th>
+					<th>
+						<label for="type2">Filière 2</label>
+					</th>
+				</tr>
+				<tr>
+					<td>
+						<input type="text" name="name" placeholder="Vincent Legat">
+					</td>
+					<td>
+						<select name="type1"
+							hx-get="/course-type-select"
+							hx-trigger="load"
+							hx-swap="innerHTML"
+							hx-params="none">
+						</select>
+					</td>
+					<td>
+						<select name="type2"
+							hx-get="/course-type-select"
+							hx-trigger="load"
+							hx-swap="innerHTML"
+							hx-params="none">
+						</select>
+					</td>
+					<td>
+						<input type="submit" value="Envoyer">
+					</td>
+				</tr>
+			</table>
+			
+		</form>
 	</body>
 </html>

@@ -49,19 +49,19 @@ async fn rocket() -> _ {
 	};
 
 	if args.contains(&"--populate-db".to_owned()) {
-		for i in 1..5 {
-			let _ = add_course(format!("CORS123{i}"), format!("course{i}"), &db_pool).await;
+		for i in 1..8 {
+			let _ = add_course(format!("CORS123{i}"), format!("course{i}"), format!("TYPE{}", i%3), &db_pool).await;
 		}
 		for i in 1..10 {
 			let _ = add_student(format!("stud{}", i), &db_pool).await;
-			for j in 1..5 {
+			for j in 1..8 {
 				let _ = add_rating(i, j, 2, &db_pool).await;
 			}
 		}
 	}
 
 	let rocket = rocket::build()
-		.mount("/", routes![serve, serve_assets])
+		.mount("/", routes![serve, serve_assets, add_student_route, course_types_select_route])
 		.mount("/admin", routes![ratings_matrix_route, course_list_route, add_course_route])
 		.manage(db_pool);
 

@@ -2,7 +2,9 @@
 	<table>
 		{% for course in courses %}
 			<tr>
-				<td>{{course.code}} - {{course.name}}</td>
+				<td>{{course.code}}</td>
+				<td>{{course.name}}</td>
+				<td>{{course.type}}</td>
 			</tr>
 		{% endfor %}
 	</table>

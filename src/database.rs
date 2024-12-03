@@ -16,7 +16,8 @@ pub struct Student {
 pub struct Course {
 	pub id: i64,
 	pub code: String,
-	pub name: String
+	pub name: String,
+	pub r#type: String
 }
 
 #[derive(Debug)]
@@ -76,11 +77,12 @@ pub async fn add_student(name: String, pool: &SqlitePool) -> Result<(), String> 
 }
 
 
-pub async fn add_course(code: String, name: String, pool: &SqlitePool) -> Result<(), String> {
+pub async fn add_course(code: String, name: String, r#type: String, pool: &SqlitePool) -> Result<(), String> {
 	let course = sqlx::query_as!(
 		Course,
 		"
-		SELECT id, code, name FROM courses
+		SELECT id, code, name, type
+		FROM courses
 		WHERE name = ? AND code = ?;
 		",
 		name, code
@@ -93,10 +95,10 @@ pub async fn add_course(code: String, name: String, pool: &SqlitePool) -> Result
 	
 	sqlx::query!(
 		"
-		INSERT INTO courses (code, name)
-		VALUES (?, ?);
+		INSERT INTO courses (code, name, type)
+		VALUES (?, ?, ?);
 		",
-		code, name
+		code, name, r#type
 	)
 	.execute(pool)
 	.await
@@ -143,7 +145,8 @@ pub async fn get_student_ratings(student_id: i64, pool: &SqlitePool) -> Result<V
 	sqlx::query_as!(
 		Rating,
 		"
-		SELECT id, student, course, rating FROM ratings
+		SELECT id, student, course, rating
+		FROM ratings
 		WHERE student = ?;
 		",
 		student_id
@@ -158,22 +161,29 @@ pub async fn get_ratings_matrix(pool: &SqlitePool) -> Result<FMatrix, String> {
 	let m = get_student_count(pool).await?;
 	let n = get_course_count(pool).await?;
 
-	let data = sqlx::query_scalar!(
+	let mut matrix = FMatrix::empty(m, n);
+
+	let ratings = sqlx::query_as!(
+		Rating,
 		"
-		SELECT rating
+		SELECT id, student, course, rating
 		FROM ratings
 		ORDER BY student, course
 		"
 	)
 	.fetch_all(pool)
 	.await
-	.map_err(|e| e.to_string())?
-	.iter()
-	.map(|elem| *elem as f32)
-	.collect();
+	.map_err(|e| e.to_string())?;
 
+	for rating in ratings {
+		matrix.set(
+			rating.student as usize - 1,
+			rating.course as usize - 1,
+			rating.rating as f32
+		);
+	}
 
-	Ok(FMatrix::new(m, n, data))
+	Ok(matrix)
 }
 
 
@@ -221,11 +231,29 @@ pub async fn get_courses(pool: &SqlitePool) -> Result<Vec<Course>, String> {
 	sqlx::query_as!(
 		Course,
 		"
-		SELECT id, code, name
+		SELECT id, code, name, type
 		FROM courses;
 		"
 	)
 	.fetch_all(pool)
 	.await
 	.map_err(|e| e.to_string())
+}
+
+
+pub async fn get_types(pool: &SqlitePool) -> Result<Vec<String>, String> {
+	sqlx::query!(
+		"
+		SELECT DISTINCT type
+		FROM courses;
+		"
+	)
+	.fetch_all(pool)
+	.await
+	.map_err(|e| e.to_string())
+	.map(|v|
+		v.iter()
+		.map(|rec| rec.r#type.to_owned())
+		.collect()
+	)
 }

@@ -16,3 +16,9 @@ pub struct RatingsMatrix {
 pub struct CoursesList {
 	pub courses: Vec<Course>
 }
+
+#[derive(Template)]
+#[template(path = "course_type_selection.html")]
+pub struct TypeSelection {
+	pub types: Vec<String>
+}

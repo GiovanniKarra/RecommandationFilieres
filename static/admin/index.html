@@ -1,8 +1,10 @@
 <html>
-
+	<head>
+		<style src="assets/css/style.css"></style>
+		<script src="assets/js/htmx.min.js" defer></script>
+	</head>
 	<body>
 		<h1>Hello sir</h1>
-		<script src="assets/js/htmx.min.js" defer></script>
 		<div id="matrix-view">
 			<div id="matrix">
 		
@@ -18,19 +20,39 @@
 	
 		<div id="courses-view">
 			<form hx-post="/admin/new-course" id="new-course-form" hx-swap="none">
-				<label for="code">Code du cours</label>
-				<label for="name">Nom du cours</label>
-				<br>
-				<input type="text" name="code" placeholder="LINMA1510">
-				<input type="text" name="name" placeholder="T_T">
-				<input type="submit" value="Ajouter">
+				<table>
+					<tr>
+						<th>
+							<label for="code">Code</label>
+						</th>
+						<th>
+							<label for="name">Nom du cours</label>
+						</th>
+						<th>
+							<label for="name">Filière</label>
+						</th>
+					</tr>
+					<tr>
+						<td>
+							<input type="text" name="code" placeholder="LINMA1510">
+						</td>
+						<td>
+							<input type="text" name="name" placeholder="T_T">
+						</td>
+						<td>
+							<input type="text" name="type" placeholder="MAP">
+						</td>
+						<td>
+							<input type="submit" value="Ajouter">
+						</td>
+					</tr>
+				</table>
+				<div id="courses"
+					hx-get="/admin/courses"
+					hx-trigger="load,submit from:#new-course-form"
+					hx-swap="innerHTML">
+				</div>
 			</form>
-			<div id="courses"
-				hx-get="/admin/courses"
-				hx-trigger="load,submit from:#new-course-form"
-				hx-swap="innerHTML">
-
-			</div>
 		</div>
 	</body>
 </html>
