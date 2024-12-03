@@ -22,3 +22,9 @@ pub struct CoursesList {
 pub struct TypeSelection {
 	pub types: Vec<String>
 }
+
+#[derive(Template)]
+#[template(path = "ratings_form.html")]
+pub struct RatingsForm {
+	pub courses: Vec<Course>
+}

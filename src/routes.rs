@@ -1,7 +1,7 @@
 use rocket::{form::Form, get, post, FromForm, State};
-use sqlx::{pool, SqlitePool, Type};
+use sqlx::SqlitePool;
 
-use crate::{database::{add_course, add_student, get_courses, get_ratings_matrix, get_students, get_types}, templates::{CoursesList, RatingsMatrix, TypeSelection}};
+use crate::{database::{add_course, add_student, get_courses, get_ratings_matrix, get_students, get_types}, templates::{CoursesList, RatingsForm, RatingsMatrix, TypeSelection}};
 
 
 #[get("/matrix")]
@@ -45,10 +45,10 @@ pub struct StudentData {
 	pub type1: String,
 	pub type2: String
 }
-#[get("/form", data = "<student_data>")]
-pub async fn add_student_route(student_data: Form<StudentData>, pool: &State<SqlitePool>) -> Result<(), String> {
+#[post("/form", data = "<student_data>")]
+pub async fn add_student_route(student_data: Form<StudentData>, pool: &State<SqlitePool>) -> Result<RatingsForm, String> {
 	add_student(student_data.name.clone(), pool).await?;
-	println!("{}", student_data.type1.clone());
-	println!("{}", student_data.type2.clone());
-	Ok(())
+	let courses = get_courses(pool).await?;
+	Ok(RatingsForm { courses })
 }
+

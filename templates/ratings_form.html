@@ -1,0 +1,12 @@
+<form hx-post="/rate">
+	{% for course in courses %}
+		<label for="{{course.code}}">{{course.code}} - {{course.name}}</label>
+		<br>
+		{% for i in 1..6 %}
+			<label>{{i}}</label>
+			<input type="radio" value="{{i}}" name="{{course.code}}">
+		{% endfor %}
+		<br>
+	{% endfor %}
+	<input type="submit" value="Envoyer">
+</form>
