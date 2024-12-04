@@ -60,7 +60,7 @@ pub async fn add_student(name: String, pool: &SqlitePool) -> Result<(), String> 
 	.await
 	.map_err(|e| e.to_string())?;
 
-	if student.is_some() { return Err("Student with this name already exists".to_owned()) }
+	if student.is_some() { return Ok(()) }
 	
 	sqlx::query!(
 		"
@@ -123,7 +123,6 @@ pub async fn add_rating(student_id: i64, course_id: i64, rating: i64, pool: &Sql
 	Ok(())
 }
 
-
 pub async fn get_student_id(name: String, pool: &SqlitePool) -> Result<i64, String> {
 	sqlx::query_as!(
 		Student,
@@ -140,6 +139,21 @@ pub async fn get_student_id(name: String, pool: &SqlitePool) -> Result<i64, Stri
 	.ok_or("Couldn't fetch student id, probably incorrect name".to_owned())
 }
 
+pub async fn get_course_id(code: String, pool: &SqlitePool) -> Result<i64, String> {
+	sqlx::query_as!(
+		Course,
+		"
+		SELECT id, code, name, type FROM courses
+		WHERE code = ?;
+		",
+		code
+	)
+	.fetch_optional(pool)
+	.await
+	.map_err(|e| e.to_string())?
+	.map(|s| s.id)
+	.ok_or("Couldn't fetch course id, probably incorrect code".to_owned())
+}
 
 pub async fn get_student_ratings(student_id: i64, pool: &SqlitePool) -> Result<Vec<Rating>, String> {
 	sqlx::query_as!(
@@ -156,6 +170,21 @@ pub async fn get_student_ratings(student_id: i64, pool: &SqlitePool) -> Result<V
 	.map_err(|e| e.to_string())
 }
 
+pub async fn reset_student_ratings(student_id: i64, pool: &SqlitePool) -> Result<(), String> {
+	sqlx::query_as!(
+		Rating,
+		"
+		DELETE FROM ratings
+		WHERE student = ?;
+		",
+		student_id
+	)
+	.execute(pool)
+	.await
+	.map_err(|e| e.to_string())?;
+
+	Ok(())
+}
 
 pub async fn get_ratings_matrix(pool: &SqlitePool) -> Result<FMatrix, String> {
 	let m = get_student_count(pool).await?;

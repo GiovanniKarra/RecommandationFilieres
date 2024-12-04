@@ -61,7 +61,7 @@ async fn rocket() -> _ {
 	}
 
 	let rocket = rocket::build()
-		.mount("/", routes![serve, serve_assets, add_student_route, course_types_select_route])
+		.mount("/", routes![serve, serve_assets, add_student_route, course_types_select_route, post_rating_route])
 		.mount("/admin", routes![ratings_matrix_route, course_list_route, add_course_route])
 		.manage(db_pool);
 
