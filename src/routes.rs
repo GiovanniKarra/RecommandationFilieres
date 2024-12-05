@@ -58,7 +58,7 @@ pub async fn add_student_route(student_data: Form<StudentData>, pool: &State<Sql
 	let courses = get_courses(pool)
 		.await?
 		.into_iter()
-		.filter(|course| course.r#type == student_data.type1 || course.r#type == student_data.type2)
+		.filter(|course| course.r#type == student_data.type1 || course.r#type == student_data.type2 || course.r#type == "None")
 		.collect();
 	Ok(RatingsForm { courses })
 }
