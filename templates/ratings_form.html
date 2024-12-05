@@ -2,10 +2,14 @@
 	{% for course in courses %}
 		<label for="{{course.code}}">{{course.code}} - {{course.name}}</label>
 		<br>
-		{% for i in 1..6 %}
-			<label>{{i}}</label>
-			<input type="radio" value="{{i}}" name="{{course.code}}">
-		{% endfor %}
+		<div style="display: flex; flex-direction: row; justify-content: space-between">
+			{% for i in 1..6 %}
+			<div style="display: flex; flex-direction: column; text-align: center;">
+				<label>{{i}}</label>
+				<input type="radio" value="{{i}}" name="{{course.code}}">
+			</div>
+			{% endfor %}
+		</div>
 		<br>
 	{% endfor %}
 	<input type="submit" value="Envoyer">

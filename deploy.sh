@@ -15,7 +15,11 @@ rm -rf build
 
 mkdir -p build
 
-ROCKET_PROFILE=release cargo build --release --target=aarch64-unknown-linux-gnu
+
+# cargo build --target=aarch64-unknown-linux-gnu
+# cp target/aarch64-unknown-linux-gnu/debug/matrix-completion-app build/matrix-server
+
+cargo build --release --target=aarch64-unknown-linux-gnu
 cp target/aarch64-unknown-linux-gnu/release/matrix-completion-app build/matrix-server
 
 cp .env build/.env
@@ -32,5 +36,5 @@ fi
 scp -r $TO_COPY $ADDRESS:MatrixCompletion
 
 if [ "$1" -ge 1 ]; then
-	echo "cd MatrixCompletion; ROCKET_PROFILE=release ./matrix-server $RESET_DB" | ssh $ADDRESS
+	echo "cd MatrixCompletion; ROCKET_PORT=8002 ./matrix-server $RESET_DB" | ssh $ADDRESS
 fi

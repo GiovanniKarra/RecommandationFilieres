@@ -1,5 +1,5 @@
 use database::{add_course, add_rating, add_student, reset_db};
-use rocket::{fs::{relative, NamedFile}, get, launch, routes};
+use rocket::{fs::NamedFile, get, launch, routes};
 use std::{env, path::{Path, PathBuf}, str::FromStr};
 use sqlx::SqlitePool;
 
@@ -11,7 +11,7 @@ use routes::*;
 
 #[get("/<path..>")]
 async fn serve(path: PathBuf) -> Option<NamedFile> {
-	let mut path = Path::new(relative!("static")).join(path);
+	let mut path = Path::new("static").join(path);
 	if path.is_dir() {
 		path.push("index.html");
 	}
@@ -22,7 +22,7 @@ async fn serve(path: PathBuf) -> Option<NamedFile> {
 
 #[get("/assets/<path..>")]
 async fn serve_assets(path: PathBuf) -> Option<NamedFile> {
-	let path = Path::new(relative!("assets")).join(path);
+	let path = Path::new("assets").join(path);
 	NamedFile::open(path).await.ok()
 }
 
